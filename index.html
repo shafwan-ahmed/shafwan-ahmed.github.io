@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<!-- ============================================================
+  index.html — personal portfolio landing page for Shafwan Ahmed
+  Plain static site: HTML + Tailwind (Play CDN) + vanilla JS.
+  No build step. Open this file or push to GitHub Pages — done.
+  All colors/typography live in css/style.css as CSS variables.
+  All interactivity lives in js/main.js (vanilla, commented).
+============================================================ -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shafwan Ahmed — student researcher</title>
+  <meta name="description" content="Shafwan Ahmed — student researcher at the NSU Intelligent Robotics (NIRO) Lab. Swarm robotics, autonomous systems, and full-stack development.">
+
+  <!-- Favicon: simple mono ~/ mark -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <!-- Anti-flash theme script: runs BEFORE first paint so a stored
+       dark preference never flashes the light theme. Keep tiny. -->
+  <script>
+    (function () {
+      try {
+        if (localStorage.getItem('theme') === 'dark') {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) { /* localStorage unavailable — default to light */ }
+    })();
+  </script>
+
+  <!-- JetBrains Mono for everything -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- Tailwind Play CDN (utility classes only; tokens in style.css) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Map Tailwind color names onto the CSS variables in style.css
+    // so both themes are driven by a single token source.
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            paper:   'var(--bg)',
+            band:    'var(--bg-soft)',
+            card:    'var(--card)',
+            ink:     'var(--ink)',
+            soft:    'var(--ink-soft)',
+            faint:   'var(--ink-faint)',
+            line:    'var(--border)',
+            accent:  'var(--accent)',
+            sky:     'var(--accent-hover)',
+            navy:    'var(--footer-bg)',
+            navyink: 'var(--footer-ink)',
+          },
+          fontFamily: {
+            mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Custom design tokens + things Tailwind can't express -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="font-mono bg-paper text-ink antialiased">
+
+  <!-- Skip link for keyboard users -->
+  <a href="#main" class="skip-link">skip to content</a>
+
+  <!-- ======================= NAV ======================= -->
+  <header class="sticky top-0 z-40 border-b border-line bg-paper/80 backdrop-blur-md">
+    <nav class="mx-auto flex max-w-5xl items-center justify-between px-5 py-3" aria-label="main navigation">
+      <a href="#top" class="wordmark text-sm font-semibold tracking-tight" aria-label="home">
+        <span class="text-accent">~/</span>shafwan-ahmed
+      </a>
+
+      <!-- Desktop links -->
+      <div class="hidden items-center gap-6 text-sm sm:flex">
+        <a class="nav-link" href="#about">about</a>
+        <a class="nav-link" href="#projects">projects</a>
+        <a class="nav-link" href="#now">now</a>
+        <a class="nav-link" href="#contact">contact</a>
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="toggle dark mode" aria-pressed="false">[ light ]</button>
+      </div>
+
+      <!-- Mobile: theme toggle + menu button -->
+      <div class="flex items-center gap-4 sm:hidden">
+        <button id="theme-toggle-mobile" class="theme-toggle" type="button" aria-label="toggle dark mode" aria-pressed="false">[ light ]</button>
+        <button id="menu-toggle" class="menu-toggle" type="button" aria-label="open menu" aria-expanded="false" aria-controls="mobile-menu">[ menu ]</button>
+      </div>
+    </nav>
+
+    <!-- Mobile stacked menu (hidden by default) -->
+    <div id="mobile-menu" class="hidden border-t border-line bg-paper px-5 py-3 sm:hidden">
+      <ul class="flex flex-col gap-3 text-sm">
+        <li><a class="nav-link mobile-nav-link" href="#about">about</a></li>
+        <li><a class="nav-link mobile-nav-link" href="#projects">projects</a></li>
+        <li><a class="nav-link mobile-nav-link" href="#now">now</a></li>
+        <li><a class="nav-link mobile-nav-link" href="#contact">contact</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main id="main" class="mx-auto max-w-5xl px-5">
+
+    <!-- ======================= HERO ======================= -->
+    <section id="top" class="reveal flex flex-col gap-8 py-14 sm:flex-row sm:items-start sm:justify-between sm:py-20">
+      <div class="max-w-xl">
+        <p class="text-sm text-faint"><span class="text-accent">$</span> whoami</p>
+        <h1 class="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">Shafwan Ahmed</h1>
+        <p class="mt-4 text-sm leading-8 text-soft">
+          Student Researcher · NSU Intelligent Robotics (NIRO) Lab<br>
+          North South University · Dhaka, Bangladesh
+        </p>
+
+        <!-- Interest tag chips -->
+        <ul class="mt-5 flex flex-wrap gap-2" aria-label="interests">
+          <li class="tag-chip">swarm robotics</li>
+          <li class="tag-chip">autonomous systems</li>
+          <li class="tag-chip">multi-drone coordination</li>
+          <li class="tag-chip">full-stack development</li>
+        </ul>
+
+        <!-- Plain links row -->
+        <p class="mt-6 text-sm">
+          <a class="link-slide" href="mailto:shafwan.work1@gmail.com">email</a>
+          <span class="text-faint"> · </span>
+          <a class="link-slide" href="https://github.com/Shafwan1999" target="_blank" rel="noopener">github</a>
+        </p>
+      </div>
+
+      <!-- Profile photo: square, subtle border, NOT circular -->
+      <img
+        src="https://avatars.githubusercontent.com/u/64217026?v=4"
+        alt="profile photo of Shafwan Ahmed"
+        width="176" height="176"
+        class="profile-img h-44 w-44 shrink-0 border border-line object-cover"
+        loading="lazy">
+    </section>
+
+    <!-- ======================= STAT ROW ======================= -->
+    <section class="reveal border-y border-line" aria-label="quick stats">
+      <dl class="grid grid-cols-2 divide-line text-center sm:grid-cols-4 sm:divide-x">
+        <div class="stat-cell border-b border-line sm:border-b-0">
+          <dt class="stat-label">years building</dt>
+          <dd class="stat-value">05+</dd>
+        </div>
+        <div class="stat-cell border-b border-line sm:border-b-0">
+          <dt class="stat-label">github repos</dt>
+          <dd class="stat-value">13</dd>
+        </div>
+        <div class="stat-cell">
+          <dt class="stat-label">research lab</dt>
+          <dd class="stat-value">01</dd>
+        </div>
+        <div class="stat-cell">
+          <dt class="stat-label">technologies</dt>
+          <dd class="stat-value">08</dd>
+        </div>
+      </dl>
+    </section>
+
+    <!-- ======================= 01 ABOUT ======================= -->
+    <!-- relative + overflow-hidden CONTAIN the drift field: nothing
+         can bleed into the stat row above or Projects below. -->
+    <section id="about" class="reveal scroll-mt-24 relative overflow-hidden py-16">
+
+      <!-- Signature "signal drift" field: hand-drawn line-art symbols
+           that float slowly upward behind the prose. Pure decoration
+           (aria-hidden, pointer-events none), pure CSS motion —
+           see style.css §4b for the keyframes + reduced-motion rules. -->
+      <div class="drift-field" aria-hidden="true">
+
+        <!-- quadrotor drone, top view (swarm work at NIRO Lab) -->
+        <svg class="drift-symbol" viewBox="0 0 40 40"
+             style="left: 3%; width: 44px; opacity: .10; --dx: 16px; --dir: 1; animation-duration: 24s; animation-delay: -12s;">
+          <line x1="11" y1="11" x2="29" y2="29"/><line x1="29" y1="11" x2="11" y2="29"/>
+          <circle cx="9" cy="9" r="6"/><circle cx="31" cy="9" r="6"/>
+          <circle cx="9" cy="31" r="6"/><circle cx="31" cy="31" r="6"/>
+          <rect x="16" y="16" width="8" height="8" rx="1"/>
+        </svg>
+
+        <!-- telemetry arcs (MAVLink radio link) -->
+        <svg class="drift-symbol" viewBox="0 0 24 24"
+             style="left: 90%; width: 30px; opacity: .12; --dx: 12px; --dir: -1; animation-duration: 16s; animation-delay: -4s; color: var(--accent);">
+          <circle cx="5" cy="19" r="1.2" fill="currentColor" stroke="none"/>
+          <path d="M5 14a5 5 0 0 1 5 5"/>
+          <path d="M5 9a10 10 0 0 1 10 10"/>
+          <path d="M5 4a15 15 0 0 1 15 15"/>
+        </svg>
+
+        <!-- terminal prompt >_ -->
+        <svg class="drift-symbol" viewBox="0 0 24 24"
+             style="left: 80%; width: 34px; opacity: .09; --dx: 14px; --dir: 1; animation-duration: 20s; animation-delay: -20s;">
+          <path d="M5 7l5 5-5 5"/>
+          <line x1="12" y1="17" x2="19" y2="17"/>
+        </svg>
+
+        <!-- git branch (3 nodes + merge) -->
+        <svg class="drift-symbol" viewBox="0 0 24 24"
+             style="left: 12%; width: 26px; opacity: .07; --dx: 18px; --dir: -1; animation-duration: 27s; animation-delay: -30s;">
+          <circle cx="7" cy="5" r="2"/><circle cx="7" cy="19" r="2"/><circle cx="17" cy="8" r="2"/>
+          <line x1="7" y1="7" x2="7" y2="17"/>
+          <path d="M15.2 9.3C13 13 10 14 7 16"/>
+        </svg>
+
+        <!-- code braces { } -->
+        <svg class="drift-symbol" viewBox="0 0 24 24"
+             style="left: 45%; width: 22px; opacity: .05; --dx: 10px; --dir: 1; animation-duration: 25s; animation-delay: -9s;">
+          <path d="M9 4C7.5 4 6.5 5 6.5 6.5v3c0 1.2-.8 2-2 2.5 1.2.5 2 1.3 2 2.5v3C6.5 19 7.5 20 9 20"/>
+          <path d="M15 4c1.5 0 2.5 1 2.5 2.5v3c0 1.2.8 2 2 2.5-1.2.5-2 1.3-2 2.5v3c0 1.5-1 2.5-2.5 2.5"/>
+        </svg>
+
+        <!-- microchip (embedded systems: Pixhawk / Pi / Arduino) -->
+        <svg class="drift-symbol" viewBox="0 0 24 24"
+             style="left: 68%; width: 36px; opacity: .08; --dx: 16px; --dir: -1; animation-duration: 21s; animation-delay: -25s; color: var(--accent);">
+          <rect x="7" y="7" width="10" height="10" rx="1"/>
+          <rect x="10" y="10" width="4" height="4"/>
+          <line x1="10" y1="7" x2="10" y2="4"/><line x1="14" y1="7" x2="14" y2="4"/>
+          <line x1="10" y1="17" x2="10" y2="20"/><line x1="14" y1="17" x2="14" y2="20"/>
+          <line x1="7" y1="10" x2="4" y2="10"/><line x1="7" y1="14" x2="4" y2="14"/>
+          <line x1="17" y1="10" x2="20" y2="10"/><line x1="17" y1="14" x2="20" y2="14"/>
+        </svg>
+
+        <!-- gear (control systems) -->
+        <svg class="drift-symbol" viewBox="0 0 24 24"
+             style="left: 24%; width: 28px; opacity: .06; --dx: 12px; --dir: 1; animation-duration: 30s; animation-delay: -15s;">
+          <circle cx="12" cy="12" r="6"/>
+          <circle cx="12" cy="12" r="2.5"/>
+          <line x1="12" y1="3" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="21"/>
+          <line x1="3" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="21" y2="12"/>
+          <line x1="5.6" y1="5.6" x2="7" y2="7"/><line x1="17" y1="17" x2="18.4" y2="18.4"/>
+          <line x1="18.4" y1="5.6" x2="17" y2="7"/><line x1="7" y1="17" x2="5.6" y2="18.4"/>
+        </svg>
+
+        <!-- atom orbit (theory ↔ practice) -->
+        <svg class="drift-symbol" viewBox="0 0 24 24"
+             style="left: 94%; width: 48px; opacity: .11; --dx: 20px; --dir: -1; animation-duration: 26s; animation-delay: -33s;">
+          <circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/>
+          <ellipse cx="12" cy="12" rx="10" ry="4"/>
+          <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/>
+          <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/>
+        </svg>
+
+        <!-- circuit trace with vias (PCB) -->
+        <svg class="drift-symbol" viewBox="0 0 24 24"
+             style="left: 55%; width: 40px; opacity: .05; --dx: 14px; --dir: 1; animation-duration: 19s; animation-delay: -6s;">
+          <path d="M3 20h6l4-8h8V5"/>
+          <circle cx="9" cy="20" r="1.5"/>
+          <circle cx="13" cy="12" r="1.5"/>
+          <circle cx="21" cy="5" r="1.5"/>
+        </svg>
+
+        <!-- radio tower arcs (ground control station) -->
+        <svg class="drift-symbol" viewBox="0 0 24 24"
+             style="left: 74%; width: 30px; opacity: .09; --dx: 12px; --dir: -1; animation-duration: 17s; animation-delay: -18s; color: var(--accent);">
+          <line x1="12" y1="21" x2="12" y2="9"/>
+          <line x1="8" y1="21" x2="16" y2="21"/>
+          <circle cx="12" cy="7" r="1.2" fill="currentColor" stroke="none"/>
+          <path d="M8.8 4.8a4.5 4.5 0 0 1 6.4 0"/>
+          <path d="M6.4 2.4a8 8 0 0 1 11.2 0"/>
+        </svg>
+
+        <!-- paper plane (deployment) -->
+        <svg class="drift-symbol" viewBox="0 0 24 24"
+             style="left: 36%; width: 24px; opacity: .06; --dx: 18px; --dir: 1; animation-duration: 15s; animation-delay: -11s;">
+          <path d="M21 3L3 10l7 3 11-10z"/>
+          <path d="M10 13l2 8 4-7"/>
+        </svg>
+
+        <!-- binary "01" — plain mono text, no svg needed -->
+        <span class="drift-symbol drift-text"
+              style="left: 8%; font-size: 20px; opacity: .08; --dx: 10px; --dir: -1; animation-duration: 29s; animation-delay: -28s; color: var(--accent);">01</span>
+
+        <!-- location pin (Dhaka) -->
+        <svg class="drift-symbol" viewBox="0 0 24 24"
+             style="left: 62%; width: 26px; opacity: .07; --dx: 12px; --dir: 1; animation-duration: 22s; animation-delay: -22s;">
+          <path d="M12 21s-6-5.2-6-10a6 6 0 1 1 12 0c0 4.8-6 10-6 10z"/>
+          <circle cx="12" cy="11" r="2"/>
+        </svg>
+
+        <!-- graduation cap (CS50 / HarvardX) -->
+        <svg class="drift-symbol" viewBox="0 0 24 24"
+             style="left: 86%; width: 38px; opacity: .10; --dx: 16px; --dir: -1; animation-duration: 23s; animation-delay: -3s;">
+          <path d="M12 5L2 9l10 4 10-4-10-4z"/>
+          <path d="M6 11v4c0 1.7 2.7 3 6 3s6-1.3 6-3v-4"/>
+          <line x1="22" y1="9" x2="22" y2="14"/>
+        </svg>
+
+        <!-- small rocket (idea → flight) -->
+        <svg class="drift-symbol" viewBox="0 0 24 24"
+             style="left: 18%; width: 32px; opacity: .07; --dx: 14px; --dir: 1; animation-duration: 18s; animation-delay: -16s;">
+          <path d="M12 2c2.8 2 4 5.5 4 9l-4 4-4-4c0-3.5 1.2-7 4-9z"/>
+          <circle cx="12" cy="8" r="1.5"/>
+          <path d="M8 11l-3.5 4L8 14"/>
+          <path d="M16 11l3.5 4L16 14"/>
+          <line x1="12" y1="15" x2="12" y2="19"/>
+        </svg>
+
+        <!-- open book (project-based learning) -->
+        <svg class="drift-symbol" viewBox="0 0 24 24"
+             style="left: 50%; width: 30px; opacity: .05; --dx: 12px; --dir: -1; animation-duration: 28s; animation-delay: -36s;">
+          <path d="M12 6c-2-1.5-5.5-1.7-8-.8V18c2.5-.9 6-.7 8 .8 2-1.5 5.5-1.7 8-.8V5.2c-2.5-.9-6-.7-8 .8z"/>
+          <line x1="12" y1="6" x2="12" y2="18.8"/>
+        </svg>
+
+      </div>
+
+      <!-- real content sits ABOVE the drift field (z-index: 1) -->
+      <div class="drift-content">
+        <h2 class="section-head"><span class="text-accent">//</span> 01 about</h2>
+
+        <div class="mt-6 max-w-3xl space-y-5 text-sm leading-8 text-soft">
+          <p>
+            I'm a student researcher motivated by <b>project-based learning</b> and
+            <b>hands-on experimentation</b>. I enjoy building scalable, reliable
+            solutions that bridge <b>theoretical concepts</b> with
+            <b>practical implementation</b> — taking an idea from a notebook sketch
+            to something that actually flies, serves, or renders.
+          </p>
+          <p>
+            My current work at the <b>NIRO Lab</b> focuses on integrating
+            <b>embedded systems</b>, <b>perception</b>, and
+            <b>control</b> for practical drone-based solutions — swarm coordination,
+            lightweight payload delivery, and real-world deployment in agriculture and fisheries.
+            Day to day I work with <b>Pixhawk flight controllers</b>,
+            <b>Raspberry Pi</b>, and <b>Arduino</b>, along with
+            <b>MAVLink communication</b>, ground control integration, and real-time monitoring.
+          </p>
+          <p>
+            I've completed <b>CS50 (HarvardX)</b>, and I program in
+            <b>C, C++, Python, and Java</b>. On the software side I build full-stack
+            with <b>React, Next.js, Node.js, and Django</b> — mostly for control
+            interfaces and visualization tools that support the robotics work.
+          </p>
+          <p>
+            I'm always open to <b>research collaborations</b> and interesting
+            problems — if you're working on something at the edge of robotics and software, I'd love to hear about it.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= 02 PROJECTS ======================= -->
+    <section id="projects" class="reveal scroll-mt-24 border-t border-line py-16">
+      <h2 class="section-head"><span class="text-accent">//</span> 02 projects</h2>
+      <p class="mt-6 max-w-2xl text-sm leading-8 text-soft">
+        Selected work — from swarm drones at NIRO Lab to early CS50 projects.
+        Click any card for the longer story.
+      </p>
+
+      <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+
+        <!-- 1. Swarm Drone (ACTIVE) -->
+        <article class="project-card" tabindex="0" role="button" aria-haspopup="dialog"
+                 data-project="swarm-drone" aria-label="open details for Swarm Drone">
+          <div class="card-cover" aria-hidden="true">
+            <!-- quadrotor swarm line-art -->
+            <svg viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <rect x="4" y="4" width="112" height="72" rx="2" stroke-dasharray="4 4" class="cover-frame"/>
+              <!-- drone 1 -->
+              <line x1="22" y1="22" x2="38" y2="38"/><line x1="38" y1="22" x2="22" y2="38"/>
+              <circle cx="22" cy="22" r="4"/><circle cx="38" cy="22" r="4"/>
+              <circle cx="22" cy="38" r="4"/><circle cx="38" cy="38" r="4"/>
+              <rect x="27" y="27" width="6" height="6" class="cover-accent"/>
+              <!-- drone 2 (smaller, offset) -->
+              <g transform="translate(46 6) scale(.75)">
+                <line x1="22" y1="22" x2="38" y2="38"/><line x1="38" y1="22" x2="22" y2="38"/>
+                <circle cx="22" cy="22" r="4"/><circle cx="38" cy="22" r="4"/>
+                <circle cx="22" cy="38" r="4"/><circle cx="38" cy="38" r="4"/>
+                <rect x="27" y="27" width="6" height="6" class="cover-accent"/>
+              </g>
+              <!-- telemetry link -->
+              <path d="M42 30 Q56 18 64 26" stroke-dasharray="3 3" class="cover-accent"/>
+              <!-- ground station -->
+              <rect x="88" y="56" width="14" height="10"/>
+              <line x1="95" y1="56" x2="95" y2="48" class="cover-accent"/>
+              <circle cx="95" cy="46" r="2" class="cover-accent"/>
+            </svg>
+          </div>
+          <div class="card-body">
+            <div class="flex items-start justify-between gap-3">
+              <h3 class="text-sm font-semibold">Swarm Drone</h3>
+              <span class="pill pill-active">ACTIVE</span>
+            </div>
+            <p class="mt-1 text-xs text-faint">NIRO Lab · 2025 – Present</p>
+            <p class="mt-3 text-xs leading-6 text-soft">Coordinated multi-drone system for precision agriculture, fisheries, and drone shows.</p>
+            <ul class="mt-4 flex flex-wrap gap-1.5" aria-label="technologies">
+              <li class="tech-tag">Pixhawk</li><li class="tech-tag">ArduCopter</li>
+              <li class="tech-tag">MAVLink</li><li class="tech-tag">Raspberry Pi</li><li class="tech-tag">GPS</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- 2. Dash-by-Plotly -->
+        <article class="project-card" tabindex="0" role="button" aria-haspopup="dialog"
+                 data-project="dash-by-plotly" aria-label="open details for Dash-by-Plotly">
+          <div class="card-cover" aria-hidden="true">
+            <!-- bar-chart line-art -->
+            <svg viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <rect x="4" y="4" width="112" height="72" rx="2" stroke-dasharray="4 4" class="cover-frame"/>
+              <line x1="24" y1="62" x2="100" y2="62"/>
+              <line x1="24" y1="62" x2="24" y2="16"/>
+              <rect x="34" y="42" width="10" height="20"/>
+              <rect x="50" y="30" width="10" height="32" class="cover-accent"/>
+              <rect x="66" y="48" width="10" height="14"/>
+              <rect x="82" y="22" width="10" height="40" class="cover-accent"/>
+              <path d="M30 34 L52 24 L72 38 L94 16" stroke-dasharray="3 3" class="cover-accent"/>
+              <circle cx="94" cy="16" r="2" class="cover-accent"/>
+            </svg>
+          </div>
+          <div class="card-body">
+            <div class="flex items-start justify-between gap-3">
+              <h3 class="text-sm font-semibold">Dash-by-Plotly</h3>
+              <span class="pill pill-archive">ARCHIVE</span>
+            </div>
+            <p class="mt-1 text-xs text-faint">Personal · 2021</p>
+            <p class="mt-3 text-xs leading-6 text-soft">Interactive data analytics dashboards in Python.</p>
+            <ul class="mt-4 flex flex-wrap gap-1.5" aria-label="technologies">
+              <li class="tech-tag">Python</li><li class="tech-tag">Plotly Dash</li><li class="tech-tag">Data Viz</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- 3. Project-1 (Wiki) -->
+        <article class="project-card" tabindex="0" role="button" aria-haspopup="dialog"
+                 data-project="project-1-wiki" aria-label="open details for Project-1 Wiki">
+          <div class="card-cover" aria-hidden="true">
+            <!-- open book line-art -->
+            <svg viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <rect x="4" y="4" width="112" height="72" rx="2" stroke-dasharray="4 4" class="cover-frame"/>
+              <path d="M60 22 C50 16 36 16 28 20 L28 60 C36 56 50 56 60 62"/>
+              <path d="M60 22 C70 16 84 16 92 20 L92 60 C84 56 70 56 60 62"/>
+              <line x1="60" y1="22" x2="60" y2="62" class="cover-accent"/>
+              <line x1="36" y1="28" x2="52" y2="30"/><line x1="36" y1="36" x2="52" y2="38"/>
+              <line x1="36" y1="44" x2="52" y2="46"/>
+              <line x1="68" y1="30" x2="84" y2="28"/><line x1="68" y1="38" x2="84" y2="36"/>
+              <line x1="68" y1="46" x2="84" y2="44"/>
+            </svg>
+          </div>
+          <div class="card-body">
+            <div class="flex items-start justify-between gap-3">
+              <h3 class="text-sm font-semibold">Project-1 (Wiki)</h3>
+              <span class="pill pill-archive">ARCHIVE</span>
+            </div>
+            <p class="mt-1 text-xs text-faint">CS50W · 2021</p>
+            <p class="mt-3 text-xs leading-6 text-soft">Wikipedia-like encyclopedia built with Django.</p>
+            <ul class="mt-4 flex flex-wrap gap-1.5" aria-label="technologies">
+              <li class="tech-tag">Python</li><li class="tech-tag">Django</li><li class="tech-tag">Markdown</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- 4. Calc_Node_js -->
+        <article class="project-card" tabindex="0" role="button" aria-haspopup="dialog"
+                 data-project="calc-node-js" aria-label="open details for Calc_Node_js">
+          <div class="card-cover" aria-hidden="true">
+            <!-- terminal window line-art -->
+            <svg viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <rect x="4" y="4" width="112" height="72" rx="2" stroke-dasharray="4 4" class="cover-frame"/>
+              <rect x="26" y="16" width="68" height="48" rx="3"/>
+              <line x1="26" y1="26" x2="94" y2="26"/>
+              <circle cx="33" cy="21" r="1.5" class="cover-accent"/>
+              <circle cx="40" cy="21" r="1.5"/>
+              <circle cx="47" cy="21" r="1.5"/>
+              <path d="M34 36 L42 42 L34 48" class="cover-accent"/>
+              <line x1="48" y1="48" x2="60" y2="48" class="cover-accent"/>
+              <line x1="34" y1="56" x2="74" y2="56" stroke-dasharray="3 3"/>
+            </svg>
+          </div>
+          <div class="card-body">
+            <div class="flex items-start justify-between gap-3">
+              <h3 class="text-sm font-semibold">Calc_Node_js</h3>
+              <span class="pill pill-archive">ARCHIVE</span>
+            </div>
+            <p class="mt-1 text-xs text-faint">Personal · 2022</p>
+            <p class="mt-3 text-xs leading-6 text-soft">First server implementation with Node.js.</p>
+            <ul class="mt-4 flex flex-wrap gap-1.5" aria-label="technologies">
+              <li class="tech-tag">JavaScript</li><li class="tech-tag">Node.js</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- 5. Uptime -->
+        <article class="project-card" tabindex="0" role="button" aria-haspopup="dialog"
+                 data-project="uptime" aria-label="open details for Uptime">
+          <div class="card-cover" aria-hidden="true">
+            <!-- pulse / heartbeat line-art -->
+            <svg viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="4" width="112" height="72" rx="2" stroke-dasharray="4 4" class="cover-frame"/>
+              <path d="M18 44 H38 L46 24 L56 60 L64 34 L70 44 H102" class="cover-accent"/>
+              <circle cx="18" cy="44" r="2"/>
+              <circle cx="102" cy="44" r="2"/>
+              <line x1="18" y1="66" x2="46" y2="66" stroke-dasharray="3 3"/>
+              <line x1="54" y1="66" x2="102" y2="66" stroke-dasharray="3 3"/>
+            </svg>
+          </div>
+          <div class="card-body">
+            <div class="flex items-start justify-between gap-3">
+              <h3 class="text-sm font-semibold">Uptime</h3>
+              <span class="pill pill-archive">ARCHIVE</span>
+            </div>
+            <p class="mt-1 text-xs text-faint">Personal · 2020</p>
+            <p class="mt-3 text-xs leading-6 text-soft">Python script monitoring website status.</p>
+            <ul class="mt-4 flex flex-wrap gap-1.5" aria-label="technologies">
+              <li class="tech-tag">Python</li><li class="tech-tag">Automation</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- 6. Fitness-Workshop -->
+        <article class="project-card" tabindex="0" role="button" aria-haspopup="dialog"
+                 data-project="fitness-workshop" aria-label="open details for Fitness-Workshop">
+          <div class="card-cover" aria-hidden="true">
+            <!-- dumbbell line-art -->
+            <svg viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <rect x="4" y="4" width="112" height="72" rx="2" stroke-dasharray="4 4" class="cover-frame"/>
+              <line x1="36" y1="40" x2="84" y2="40" class="cover-accent"/>
+              <rect x="28" y="28" width="8" height="24" rx="2"/>
+              <rect x="84" y="28" width="8" height="24" rx="2"/>
+              <rect x="20" y="32" width="8" height="16" rx="2" class="cover-accent"/>
+              <rect x="92" y="32" width="8" height="16" rx="2" class="cover-accent"/>
+              <line x1="44" y1="52" x2="76" y2="52" stroke-dasharray="3 3"/>
+            </svg>
+          </div>
+          <div class="card-body">
+            <div class="flex items-start justify-between gap-3">
+              <h3 class="text-sm font-semibold">Fitness-Workshop</h3>
+              <span class="pill pill-archive">ARCHIVE</span>
+            </div>
+            <p class="mt-1 text-xs text-faint">Personal · 2020</p>
+            <p class="mt-3 text-xs leading-6 text-soft">Static website for a fitness workshop.</p>
+            <ul class="mt-4 flex flex-wrap gap-1.5" aria-label="technologies">
+              <li class="tech-tag">HTML</li><li class="tech-tag">CSS</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- 7. Project-0 (Search) -->
+        <article class="project-card" tabindex="0" role="button" aria-haspopup="dialog"
+                 data-project="project-0-search" aria-label="open details for Project-0 Search">
+          <div class="card-cover" aria-hidden="true">
+            <!-- magnifier line-art -->
+            <svg viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <rect x="4" y="4" width="112" height="72" rx="2" stroke-dasharray="4 4" class="cover-frame"/>
+              <circle cx="54" cy="34" r="16" class="cover-accent"/>
+              <line x1="66" y1="46" x2="84" y2="62" class="cover-accent"/>
+              <line x1="46" y1="30" x2="62" y2="30"/>
+              <line x1="46" y1="38" x2="58" y2="38"/>
+              <path d="M24 62 H40" stroke-dasharray="3 3"/>
+              <path d="M24 56 H34" stroke-dasharray="3 3"/>
+            </svg>
+          </div>
+          <div class="card-body">
+            <div class="flex items-start justify-between gap-3">
+              <h3 class="text-sm font-semibold">Project-0 (Search)</h3>
+              <span class="pill pill-archive">ARCHIVE</span>
+            </div>
+            <p class="mt-1 text-xs text-faint">CS50W · 2021</p>
+            <p class="mt-3 text-xs leading-6 text-soft">Front-end clone of Google Search.</p>
+            <ul class="mt-4 flex flex-wrap gap-1.5" aria-label="technologies">
+              <li class="tech-tag">HTML</li><li class="tech-tag">CSS</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- 8. MyPage -->
+        <article class="project-card" tabindex="0" role="button" aria-haspopup="dialog"
+                 data-project="mypage" aria-label="open details for MyPage">
+          <div class="card-cover" aria-hidden="true">
+            <!-- id-card / smiley line-art -->
+            <svg viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <rect x="4" y="4" width="112" height="72" rx="2" stroke-dasharray="4 4" class="cover-frame"/>
+              <rect x="26" y="18" width="68" height="44" rx="3"/>
+              <circle cx="44" cy="34" r="8" class="cover-accent"/>
+              <path d="M36 54 C38 46 50 46 52 54" class="cover-accent"/>
+              <line x1="62" y1="30" x2="84" y2="30"/>
+              <line x1="62" y1="38" x2="84" y2="38"/>
+              <line x1="62" y1="46" x2="76" y2="46" stroke-dasharray="3 3"/>
+              <circle cx="42" cy="32" r="1" fill="currentColor"/>
+              <circle cx="46" cy="32" r="1" fill="currentColor"/>
+            </svg>
+          </div>
+          <div class="card-body">
+            <div class="flex items-start justify-between gap-3">
+              <h3 class="text-sm font-semibold">MyPage</h3>
+              <span class="pill pill-archive">ARCHIVE</span>
+            </div>
+            <p class="mt-1 text-xs text-faint">CS50 · 2020</p>
+            <p class="mt-3 text-xs leading-6 text-soft">CS50 Week 8 personal homepage.</p>
+            <ul class="mt-4 flex flex-wrap gap-1.5" aria-label="technologies">
+              <li class="tech-tag">HTML</li><li class="tech-tag">CSS</li><li class="tech-tag">JavaScript</li>
+            </ul>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ======================= 03 NOW ======================= -->
+    <section id="now" class="reveal scroll-mt-24 border-t border-line py-16">
+      <h2 class="section-head"><span class="text-accent">//</span> 03 now</h2>
+      <ul class="mt-6 max-w-3xl space-y-4 text-sm leading-8 text-soft">
+        <li><span class="text-accent">[2025 – Present]</span> Student Researcher at NIRO Lab — swarm drone coordination (Pixhawk, ArduCopter, MAVLink).</li>
+        <li><span class="text-accent">[2021]</span> Completed CS50 Web Programming with Python and JavaScript (HarvardX).</li>
+        <li><span class="text-accent">[2020]</span> Started building on GitHub.</li>
+      </ul>
+    </section>
+
+    <!-- ======================= 04 CONTACT ======================= -->
+    <section id="contact" class="reveal scroll-mt-24 border-t border-line py-16">
+      <h2 class="section-head"><span class="text-accent">//</span> 04 get in touch</h2>
+      <p class="mt-6 max-w-2xl text-sm leading-8 text-soft">
+        I'm open to research collaborations and interesting projects. The fastest way to reach me is email:
+      </p>
+      <p class="mt-5 flex flex-wrap items-center gap-3 text-sm">
+        <a class="link-slide font-semibold" href="mailto:shafwan.work1@gmail.com">shafwan.work1@gmail.com</a>
+        <button id="copy-email" class="copy-btn" type="button" aria-label="copy email address to clipboard">[ copy ]</button>
+      </p>
+      <p class="mt-4 text-sm text-soft">
+        or find me on
+        <a class="link-slide" href="https://github.com/Shafwan1999" target="_blank" rel="noopener">github</a>.
+      </p>
+    </section>
+  </main>
+
+  <!-- ======================= FOOTER ======================= -->
+  <footer class="bg-navy text-navyink">
+    <div class="mx-auto flex max-w-5xl flex-col items-center gap-3 px-5 py-8 text-xs sm:flex-row sm:justify-between">
+      <span class="font-semibold"><span class="text-sky">~/</span>shafwan-ahmed</span>
+      <span>© 2026 shafwan ahmed · hosted on github pages</span>
+      <a href="#top" class="footer-top-link">back to top ↑</a>
+    </div>
+  </footer>
+
+  <!-- ======================= PROJECT MODAL ======================= -->
+  <!-- Hidden by default; filled and shown by js/main.js -->
+  <div id="project-modal" class="modal-overlay" role="dialog" aria-modal="true"
+       aria-labelledby="modal-title" hidden>
+    <div class="modal-panel" role="document">
+      <!-- real content sits ABOVE the injected drift field (z-index: 1);
+           the field itself is added/removed by js/main.js on open/close -->
+      <div class="modal-content">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h3 id="modal-title" class="text-base font-bold"></h3>
+          <p id="modal-meta" class="mt-1 text-xs text-faint"></p>
+        </div>
+        <button id="modal-close" class="modal-close" type="button" aria-label="close project details">✕</button>
+      </div>
+      <p id="modal-description" class="mt-5 text-sm leading-8 text-soft"></p>
+      <ul id="modal-tags" class="mt-5 flex flex-wrap gap-1.5" aria-label="technologies"></ul>
+      <div id="modal-links" class="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- All interactivity (theme, menu, reveal, modal, copy) -->
+  <script src="js/main.js" defer></script>
+</body>
+</html>

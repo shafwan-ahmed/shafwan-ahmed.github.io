@@ -1,0 +1,539 @@
+/* ============================================================
+  style.css — design tokens + custom styles for the portfolio
+
+  Structure:
+    1. Design tokens (CSS variables) — light + dark themes
+    2. Base elements (body, selection, focus, smooth scroll)
+    3. Reusable bits (skip-link, section headers, link-slide,
+       tag chips, tech tags, pills, stat row)
+    4. Project cards + hand-authored SVG covers
+    4b. Signal drift field — the About section's signature motif
+        (floating line-art symbols, pure CSS, fully contained);
+        the same drift motif also appears inside the project
+        modals (§5), injected per-project by js/main.js
+    5. Project modal
+    6. Motion (page fade-in, scroll reveal, reduced motion)
+
+  Tailwind (Play CDN) handles layout utilities in index.html.
+  Colors here are CSS variables that Tailwind's config maps to
+  (see the inline tailwind.config in <head>), so ONE token edit
+  updates everything. Dark mode = `class="dark"` on <html>.
+============================================================ */
+
+/* ---------- 1. Design tokens ---------- */
+:root {
+  /* warm paper light theme (default) */
+  --bg:            #faf9f6;
+  --bg-soft:       #f3f1ec;
+  --card:          #ffffff;
+  --border:        #e4e0d9;
+
+  --ink:           #1c1917;
+  --ink-soft:      #57534e;
+  --ink-faint:     #a8a29e;
+
+  --accent:        #0E7C8C; /* NIRO teal */
+  --accent-hover:  #2FB8CE; /* sky */
+
+  /* marker highlights (rotating colors in prose) */
+  --hl-yellow: rgba(255, 214, 96, .9);
+  --hl-green:  rgba(157, 191, 158, .68);
+  --hl-peach:  rgba(242, 184, 128, .62);
+  --hl-blue:   rgba(158, 155, 210, .62);
+
+  /* deep navy footer band (light theme) */
+  --footer-bg:   #10222C;
+  --footer-ink:  #E7F1F4;
+
+  --gold: #E8A33D; /* ACTIVE pill */
+
+  color-scheme: light;
+}
+
+html.dark {
+  /* warm dark theme */
+  --bg:            #161412;
+  --bg-soft:       #1e1b18;
+  --card:          #201d1a;
+  --border:        #35302b;
+
+  --ink:           #ede9e3;
+  --ink-soft:      #a9a29a;
+  --ink-faint:     #6b655e;
+
+  --accent:        #2FB8CE; /* sky becomes primary in dark */
+  --accent-hover:  #5fd2e4;
+
+  /* highlights at ~35% opacity */
+  --hl-yellow: rgba(255, 214, 96, .35);
+  --hl-green:  rgba(157, 191, 158, .35);
+  --hl-peach:  rgba(242, 184, 128, .35);
+  --hl-blue:   rgba(158, 155, 210, .35);
+
+  /* footer stays navy */
+  --footer-bg:   #0B141A;
+  --footer-ink:  #E7F1F4;
+
+  color-scheme: dark;
+}
+
+/* ---------- 2. Base ---------- */
+html {
+  scroll-behavior: smooth; /* JS also handles this; harmless fallback */
+}
+
+body {
+  font-size: 16px;
+  line-height: 1.8;
+  /* gentle color transition when toggling themes */
+  transition: background-color .25s ease, color .25s ease;
+}
+
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* keyboard focus: accent outline everywhere */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* lowercase aesthetic */
+body {
+  /* content is written lowercase; nothing forced here */
+}
+
+/* ---------- 3. Reusable bits ---------- */
+
+/* skip link: visually hidden until focused */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  padding: .5rem 1rem;
+  background: var(--accent);
+  color: #fff;
+  font-size: .8rem;
+  z-index: 100;
+}
+.skip-link:focus {
+  left: .5rem;
+  top: .5rem;
+}
+
+/* nav link + underline-slide hover (background-image gradient trick) */
+.nav-link {
+  color: var(--ink-soft);
+  text-decoration: none;
+  background-image: linear-gradient(var(--accent-hover), var(--accent-hover));
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size .25s ease, color .25s ease;
+  padding-bottom: 1px;
+}
+.nav-link:hover {
+  color: var(--ink);
+  background-size: 100% 1px;
+}
+
+/* inline link in prose: same underline-slide, accent colored */
+.link-slide {
+  color: var(--accent);
+  text-decoration: none;
+  background-image: linear-gradient(var(--accent-hover), var(--accent-hover));
+  background-size: 0% 1.5px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size .25s ease, color .25s ease;
+  padding-bottom: 1px;
+}
+.link-slide:hover {
+  color: var(--accent-hover);
+  background-size: 100% 1.5px;
+}
+
+/* nav wordmark hover */
+.wordmark {
+  color: var(--ink);
+  text-decoration: none;
+  transition: color .25s ease;
+}
+.wordmark:hover {
+  color: var(--accent);
+}
+
+/* theme toggle + menu toggle: minimal mono bracket buttons */
+.theme-toggle,
+.menu-toggle,
+.copy-btn {
+  font-family: inherit;
+  font-size: .8rem;
+  color: var(--ink-soft);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: .15rem .25rem;
+  transition: color .25s ease;
+}
+.theme-toggle:hover,
+.menu-toggle:hover,
+.copy-btn:hover {
+  color: var(--accent);
+}
+.copy-btn {
+  border: 1px solid var(--border);
+  padding: .15rem .6rem;
+  background: var(--card);
+}
+.copy-btn:hover {
+  border-color: var(--accent);
+}
+
+/* section header: "// 01 about" */
+.section-head {
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  color: var(--ink);
+}
+
+/* marker-highlight keywords in prose */
+.hl {
+  font-weight: 500;
+  color: var(--ink);
+  padding: .05em .25em;
+  border-radius: 2px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.hl-yellow { background: var(--hl-yellow); }
+.hl-green  { background: var(--hl-green); }
+.hl-peach  { background: var(--hl-peach); }
+.hl-blue   { background: var(--hl-blue); }
+
+/* hero interest chips */
+.tag-chip {
+  font-size: .7rem;
+  color: var(--ink-soft);
+  border: 1px solid var(--border);
+  background: var(--bg-soft);
+  padding: .15rem .6rem;
+  border-radius: 999px;
+}
+
+/* small mono tech chips on cards + modal */
+.tech-tag {
+  font-size: .65rem;
+  color: var(--ink-soft);
+  border: 1px solid var(--border);
+  padding: .05rem .5rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* status pills */
+.pill {
+  font-size: .6rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  padding: .15rem .55rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.pill-active {
+  background: var(--gold);
+  color: #1c1917;
+}
+.pill-archive {
+  background: var(--bg-soft);
+  color: var(--ink-faint);
+  border: 1px solid var(--border);
+}
+
+/* stat row */
+.stat-cell {
+  padding: 1.25rem .5rem;
+}
+.stat-label {
+  font-size: .65rem;
+  text-transform: lowercase;
+  letter-spacing: .06em;
+  color: var(--ink-faint);
+}
+.stat-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-top: .15rem;
+}
+
+/* profile photo — dimmed slightly in dark mode */
+.profile-img {
+  transition: opacity .25s ease;
+}
+html.dark .profile-img {
+  opacity: .92;
+}
+
+/* footer back-to-top link */
+.footer-top-link {
+  color: var(--footer-ink);
+  text-decoration: none;
+  background-image: linear-gradient(var(--accent-hover), var(--accent-hover));
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size .25s ease, color .25s ease;
+  padding-bottom: 1px;
+}
+.footer-top-link:hover {
+  color: var(--accent-hover);
+  background-size: 100% 1px;
+}
+
+/* ---------- 4. Project cards + SVG covers ---------- */
+.project-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color .25s ease, transform .25s ease, box-shadow .25s ease;
+}
+.project-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(28, 25, 23, .06);
+}
+html.dark .project-card:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .35);
+}
+
+/* cover band: soft bg + mono line-art svg */
+.card-cover {
+  background: var(--bg-soft);
+  border-bottom: 1px solid var(--border);
+  padding: .75rem;
+  color: var(--ink-faint); /* default stroke color for the art */
+}
+.card-cover svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.cover-frame {
+  stroke: var(--border);
+}
+.cover-accent {
+  stroke: var(--accent);
+}
+/* dim marker art slightly in dark mode */
+html.dark .card-cover svg {
+  opacity: .92;
+}
+
+.card-body {
+  padding: 1rem 1.1rem 1.2rem;
+}
+
+/* ---------- 4b. Signal drift field (About signature motif) ----------
+   Hand-drawn line-art symbols float slowly upward behind the About
+   prose. The section itself is `relative overflow-hidden` (Tailwind
+   classes in index.html), so the field can never bleed into the
+   neighboring sections. Pure CSS, transform-only animation. */
+
+/* the field: absolute layer behind the content, inert, edge-faded */
+.drift-field {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  color: var(--ink); /* default stroke color; a few symbols override to --accent */
+  /* soft vertical fade so symbols dissolve at the section edges
+     instead of hard-clipping against the overflow boundary */
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 12%, black 88%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, black 12%, black 88%, transparent);
+}
+
+/* real content sits above the field */
+.drift-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* one symbol: starts just below the section's bottom edge and
+   drifts up. Per-symbol left/width/opacity/duration/delay/sway
+   are set inline in index.html (--dx = sway amplitude, --dir = ±1). */
+.drift-symbol {
+  position: absolute;
+  bottom: 0;
+  display: block;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  animation-name: drift;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+/* the binary "01" symbol is live mono text, not an svg */
+.drift-text {
+  stroke: none;
+  font-weight: 600;
+  letter-spacing: .12em;
+  line-height: 1;
+}
+
+/* upward float with a gentle sideways sway + slight rotation at
+   the midpoints, so paths feel organic instead of elevator-straight.
+   Travel is ~147vh total: enough to fully exit the section's top
+   edge before the loop restarts below the bottom edge. */
+@keyframes drift {
+  0%   { transform: translate3d(0, 15vh, 0) rotate(0deg); }
+  25%  { transform: translate3d(calc(var(--dx) * var(--dir)), -18vh, 0) rotate(calc(5deg * var(--dir))); }
+  50%  { transform: translate3d(calc(var(--dx) * var(--dir) * -0.8), -52vh, 0) rotate(calc(-5deg * var(--dir))); }
+  75%  { transform: translate3d(calc(var(--dx) * var(--dir) * 0.7), -86vh, 0) rotate(calc(3deg * var(--dir))); }
+  100% { transform: translate3d(0, -132vh, 0) rotate(0deg); }
+}
+
+/* dark theme: dim the whole field ~0.8 so it stays a whisper
+   (applies to the modal field too — same .drift-field class) */
+html.dark .drift-field {
+  opacity: .8;
+}
+
+/* modal variant: identical behavior to the About field (same
+   keyframes, mask, dark-dim and reduced-motion rules above);
+   this modifier exists as a hook for any modal-only tweaks —
+   per-symbol size/opacity/duration are set inline by js/main.js */
+.drift-field-modal {
+  z-index: 0; /* below .modal-content (z-index: 1) */
+}
+
+/* About keywords are plain bold ink now (marker highlights removed) */
+#about b {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* ---------- 5. Project modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  background: rgba(28, 25, 23, .45);
+  backdrop-filter: blur(3px);
+}
+html.dark .modal-overlay {
+  background: rgba(0, 0, 0, .55);
+}
+.modal-overlay[hidden] {
+  display: none;
+}
+
+.modal-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  width: 100%;
+  max-width: 34rem;
+  max-height: 85vh;
+  /* relative + hidden CONTAIN the injected drift field (same rule
+     as the About section): symbols can never bleed onto the page
+     behind the panel. Scrolling moves to .modal-content below. */
+  position: relative;
+  overflow: hidden;
+  padding: 1.5rem 1.6rem;
+  box-shadow: 0 20px 50px rgba(28, 25, 23, .18);
+}
+
+/* real modal content: sits above the drift field and keeps the
+   panel scrollable for long descriptions (overflow moved here
+   from .modal-panel so the field stays pinned, not scrolled) */
+.modal-content {
+  position: relative;
+  z-index: 1;
+  max-height: calc(85vh - 3rem); /* panel max-height minus its vertical padding */
+  overflow-y: auto;
+}
+html.dark .modal-panel {
+  box-shadow: 0 20px 50px rgba(0, 0, 0, .5);
+}
+
+.modal-close {
+  font-family: inherit;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--ink-soft);
+  cursor: pointer;
+  padding: .2rem .55rem;
+  border-radius: 3px;
+  font-size: .8rem;
+  line-height: 1.4;
+  transition: color .25s ease, border-color .25s ease;
+}
+.modal-close:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* body scroll lock while modal is open */
+body.modal-open {
+  overflow: hidden;
+}
+
+/* ---------- 6. Motion ---------- */
+
+/* page fade-in */
+@keyframes page-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+body {
+  animation: page-fade .25s ease both;
+}
+
+/* subtle scroll reveal: set initial state via JS-free CSS class,
+   JS adds .is-visible when the section enters the viewport */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity .5s ease, transform .5s ease;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* respect reduced motion: no fade, no reveal, no smooth scroll */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  body { animation: none; }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .project-card,
+  .nav-link,
+  .link-slide {
+    transition: none;
+  }
+  /* drift field: hidden entirely under reduced motion — the prose
+     stands alone rather than freezing symbols mid-section; the
+     same selector also covers the modal's .drift-field-modal */
+  .drift-field {
+    display: none;
+  }
+}
